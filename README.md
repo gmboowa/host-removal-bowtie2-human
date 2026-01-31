@@ -2,27 +2,14 @@
 
 A lightweight, reproducible workflow to **remove human (host) reads** from paired-end Illumina FASTQs using **Bowtie2**.
 
-✅ Works on macOS (Homebrew) and Conda/Mamba  
+✅ Works on macOS (Homebrew) & Conda/Mamba  
 ✅ Batch mode from a `fastq_list.txt` (2 columns: R1 R2)  
 ✅ Outputs host-removed paired FASTQs (`*_R1.clean.fastq.gz`, `*_R2.clean.fastq.gz`)  
 ✅ Logs Bowtie2 alignment summary per sample
 
 ---
 
-## Repository name suggestion
-
-Recommended repo name (short + descriptive):
-
-**`host-rm-bowtie2-human`**
-
-Alternative options:
-- `human-host-read-removal-bowtie2`
-- `host-decontam-bowtie2`
-- `bowtie2-host-removal-batch`
-
----
-
-## Repo layout 
+## Layout
 
 ```
 host-removal-bowtie2-human/
@@ -43,11 +30,6 @@ host-removal-bowtie2-human/
         └── human.fa.gz            # Git LFS
 
 ```
-
-### Notes on storing the human reference
-- **Best practice:** do *not* commit the full human genome FASTA or Bowtie2 index to GitHub.
-- Instead, include **instructions** to download from an official source (e.g., GRCh38) and build the index locally.
-- If you still choose to store it, use **Git LFS** and expect GitHub storage/bandwidth limits.
 
 ---
 
@@ -78,16 +60,14 @@ which samtools && samtools --version
 Pick a location for the index (example matches your paths):
 
 ```bash
-mkdir -p /Volumes/MBOOWA/Uganda_Jan_2026/human_bt2_index
-bowtie2-build \
-  /Volumes/MBOOWA/Uganda_Jan_2026/human.fa \
-  /Volumes/MBOOWA/Uganda_Jan_2026/human_bt2_index/human
+mkdir -p ~/human_bt2_index
+bowtie2-build ~/human.fa ~/human_bt2_index/human
 ```
 
 This creates files like:
 - `human.1.bt2` … `human.4.bt2`
 - `human.rev.1.bt2`, `human.rev.2.bt2`
-(or `.bt2l` for large genomes)
+
 
 ---
 
@@ -107,18 +87,18 @@ Two columns per line (tab or space), **R1 then R2**:
 
 ```bash
 bash scripts/host_remove_bt2_batch.sh \
-  -x /Volumes/MBOOWA/Uganda_Jan_2026/human_bt2_index/human \
-  -l /Users/gmboowa/Desktop/Staphylococcus-TZ/fastq_list.txt \
-  -o /Users/gmboowa/Desktop/Staphylococcus-TZ/host_removed_reads \
+  -x ~/human_bt2_index/human \
+  -l ~/fastq_list.txt \
+  -o ~/host_removed_reads \
   -t 8
 ```
 
 Example output:
 ```
-▶ Processing: A55934
+▶ Processing: SampleA
 processed 5663646 reads
-✓ Wrote: .../A55934_R1.clean.fastq.gz
-✓ Wrote: .../A55934_R2.clean.fastq.gz
+✓ Wrote: .../SampleA_R1.clean.fastq.gz
+✓ Wrote: .../SampleA_R2.clean.fastq.gz
 Done.
 ```
 
@@ -215,35 +195,6 @@ echo "Done."
 
 ---
 
-## Git LFS setup for `human.fa` (if you insist on storing it)
-
-### 1) Install Git LFS
-```bash
-git lfs install
-```
-
-### 2) Track the FASTA with LFS
-From the repo root:
-```bash
-git lfs track "reference/*.fa"
-git lfs track "reference/*.fa.gz"
-```
-
-### 3) Update `.gitattributes`
-This will be created/updated automatically by `git lfs track`, but it should include lines like:
-
-```gitattributes
-reference/*.fa filter=lfs diff=lfs merge=lfs -text
-reference/*.fa.gz filter=lfs diff=lfs merge=lfs -text
-```
-
-### 4) Add and commit
-```bash
-git add .gitattributes reference/human.fa.gz
-git commit -m "Track human reference with Git LFS"
-```
-
----
 
 ## Output files
 
@@ -274,5 +225,3 @@ MIT License
 
 ---
 
-## Contact
-Gerald Mboowa
