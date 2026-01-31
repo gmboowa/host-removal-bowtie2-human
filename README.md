@@ -1,4 +1,4 @@
-# host-rm-bowtie2 (human read removal for paired-end FASTQ)
+## host-rm-bowtie2 (human read removal for paired-end FASTQ)
 
 A lightweight, reproducible workflow to **remove human (host) reads** from paired-end Illumina FASTQs using **Bowtie2**.
 
@@ -22,23 +22,26 @@ Alternative options:
 
 ---
 
-## Repo layout (recommended)
+## Repo layout 
 
 ```
-host-rm-bowtie2-human/
+host-removal-bowtie2-human/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
 ├── .gitattributes
 ├── scripts/
 │   └── host_remove_bt2_batch.sh
-├── examples/
-│   ├── fastq_list.example.txt
-│   └── run_example.sh
 └── reference/
-    ├── README.md
-    ├── human.fa.gz            # (optional) large file via Git LFS
-    └── bt2_index/             # (optional) build outputs (NOT recommended to commit)
+    └── human_bt2_index/
+        ├── human.1.bt2
+        ├── human.2.bt2
+        ├── human.3.bt2
+        ├── human.4.bt2
+        ├── human.rev.1.bt2
+        ├── human.rev.2.bt2
+        └── human.fa.gz            # Git LFS
+
 ```
 
 ### Notes on storing the human reference
